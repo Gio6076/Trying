@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Photo Album with Special Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: row;
+            background-color: #f0f0f0;
+        }
+        .left-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .right-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;    
+        }
+        h1 {
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #ff69b4;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff1493;
+        }
+        .album-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            max-width: 600px;
+            color: #000;
+        }
+        .album-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls button:disabled {
+            background-color: #aaa;
+        }
+        .description {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+        .line {
+            border-left: 1px solid #ccc;
+            height: 80%;
+            margin: 0 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error-box {
+            border: 1px solid #ff4c4c;
+            background-color: #ffe6e6;
+            color: #ff4c4c;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-container">
+        <div class="container">
+            <h1>Hello, Love!</h1>
+            <p>Click the button for a surprise... hehe</p>
+            <button onclick="showModal()">Click Me!</button>
+        </div>
+        
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div id="messageContainer">
+                    <!-- Messages will be injected here -->
+                </div>
+                <button id="nextButton" onclick="showNextMessage()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="right-container">
+        <div class="album-container">
+            <img id="photo" src="photo1.jpg" alt="Photo 1">
+            <div class="description" id="description">Description for Photo 1</div>
+            <div class="controls">
+                <button id="prevBtn" onclick="prevPhoto()">Previous</button>
+                <button id="nextBtn" onclick="nextPhoto()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const photos = [
+            'photo1.jpg',
+            'photo2.jpg',
+            'photo3.jpg'
+        ];
+        const descriptions = [
+            'Description for Photo 1',
+            'Description for Photo 2',
+            'Description for Photo 3'
+        ];
+        let currentPhotoIndex = 0;
+
+        function updatePhoto() {
+            document.getElementById('photo').src = photos[currentPhotoIndex];
+            document.getElementById('description').innerText = descriptions[currentPhotoIndex];
+            document.getElementById('prevBtn').disabled = currentPhotoIndex === 0;
+            document.getElementById('nextBtn').disabled = currentPhotoIndex === photos.length - 1;
+        }
+
+        function prevPhoto() {
+            if (currentPhotoIndex > 0) {
+                currentPhotoIndex--;
+                updatePhoto();
+            }
+        }
+
+        function nextPhoto() {
+            if (currentPhotoIndex < photos.length - 1) {
+                currentPhotoIndex++;
+                updatePhoto();
+            }
+        }
+
+        updatePhoto();
+        
+        const messages = [
+            "Hi love, this is the first time making something like this, so surely hindi ito ganun kaganda, pero I did the best I can.",
+            "This is just a message, kasi I still can't do something na napa 'grand'. Hehe",
+            "I love you more every day!",
+            "You brighten my days with your smile.",
+            "Thank you for being you!"
+        ];
+
+        let currentMessageIndex = 0;
+
+        function showModal() {
+            document.getElementById('myModal').style.display = 'block';
+            showNextMessage();
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+            currentMessageIndex = 0;
+            document.getElementById('messageContainer').innerHTML = '';
+            document.getElementById('nextButton').style.display = 'block';
+        }
+
+        function showNextMessage() {
+            if (currentMessageIndex < messages.length) {
+                const messageContainer = document.getElementById('messageContainer');
+                const message = messages[currentMessageIndex];
+                const errorBox = document.createElement('div');
+                errorBox.className = 'error-box';
+                errorBox.innerText = `Error: ${message}`;
+                messageContainer.appendChild(errorBox);
+                currentMessageIndex++;
+                if (currentMessageIndex === messages.length) {
+                    document.getElementById('nextButton').style.display = 'none';
+                }
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('myModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
